@@ -28,9 +28,6 @@ jobs:
   build-push-registry:
     name: Docker Build-Push
     runs-on: self-hosted
-    env:
-      REPO_NAME: ${{ github.event.repository.name }}
-      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
       
     steps:
       - name: Checkout
@@ -40,10 +37,10 @@ jobs:
         with:
           DOCKER_LOGIN_ID: ${{ secrets.DOCKER_LOGIN_ID }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        
-      - name: Build Docker Image
-        run: |
-          docker build -t $REGISTRY/$REPO_NAME:$GITHUB_SHA .
-      - name: Push Docker Image to Container Registry
-        run: |
-          docker push $REGISTRY/$REPO_NAME:$GITHUB_SHA
+      - name: Build and push docker hub
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: sirpm/maven-web-app:latest, sirpm/maven-web-app:${{ github.run_number }}
+ 
