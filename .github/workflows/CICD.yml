@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Login to Docker
         run: |
-          echo "$DOCKER_LOGIN_PASSWORD" | docker login $REGISTRY -u $DOCKER_LOGIN_ID  --password-stdin
+          echo "$DOCKER_LOGIN_PASSWORD" | docker login $REGISTRY_NAME -u $DOCKER_LOGIN_ID  --password-stdin
       - name: Build Docker Image
         run: |
           docker build -t $REGISTRY/$REPO_NAME:$GITHUB_SHA .
