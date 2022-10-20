@@ -33,9 +33,6 @@ jobs:
       REGISTRY: ${{ secrets.REGISTRY_NAME }}
       DOCKER_LOGIN_ID: ${{ secrets.DOCKER_LOGIN_ID }}
       DOCKER_LOGIN_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    if: contains('
-      refs/heads/development
-      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v2
