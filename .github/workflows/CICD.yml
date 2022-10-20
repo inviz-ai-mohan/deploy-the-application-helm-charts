@@ -30,15 +30,15 @@ jobs:
     runs-on: self-hosted
     env:
       REPO_NAME: ${{ github.event.repository.name }}
-      REGISTRY: ${{ secrets.REGISTRY_NAME }}
+      REGISTRY: ${{ secrets.REGISTRY }}
       DOCKER_LOGIN_ID: ${{ secrets.DOCKER_LOGIN_ID }}
-      DOCKER_LOGIN_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Login to Docker
         run: |
-          echo "$DOCKER_LOGIN_PASSWORD" | docker login $REGISTRY -u $DOCKER_LOGIN_ID  --password-stdin
+          echo "$DOCKER_PASSWORD" | docker login $REGISTRY -u $DOCKER_LOGIN_ID  --password-stdin
       - name: Build Docker Image
         run: |
           docker build -t $REGISTRY/$REPO_NAME:$GITHUB_SHA .
