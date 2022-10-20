@@ -45,4 +45,3 @@ jobs:
       - name: Push Docker Image to Container Registry
         run: |
           docker push $REGISTRY/$REPO_NAME:$GITHUB_SHA
- 
