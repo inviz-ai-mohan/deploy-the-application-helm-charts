@@ -26,12 +26,22 @@ jobs:
       run: mvn -B package --file pom.xml
   
   build-push-registry:
-    name: Docker Build-push
+    name: Docker Build-Push
     runs-on: self-hosted
-    
+    env:
+      REPO_NAME: ${{ github.event.repository.name }}
+      REGISTRY: ${{ secrets.REGISTRY_NAME }}
+      DOCKER_LOGIN_ID: ${{ secrets.DOCKER_LOGIN_ID }}
+      DOCKER_LOGIN_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
-    - name: Docker Build
-      run: |
-        docker build -t $REGISTRY/$REPO_NAME:$GITHUB_SHA .
-        docker login -u sirpm -p {{ .secrets.DOCKER_PASSWORD }}
-        Docker push $REGISTRY/$REPO_NAME:GITHUB_SHA
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to Docker
+        run: |
+          echo "$DOCKER_LOGIN_PASSWORD" | docker login $REGISTRY -u $DOCKER_LOGIN_ID  --password-stdin
+      - name: Build Docker Image
+        run: |
+          docker build -t $REGISTRY/$REPO_NAME:$GITHUB_SHA .
+      - name: Push Docker Image to Container Registry
+        run: |
+          docker push $REGISTRY/$REPO_NAME:$GITHUB_SHA
