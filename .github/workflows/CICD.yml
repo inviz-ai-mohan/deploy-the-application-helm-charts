@@ -32,7 +32,7 @@ jobs:
       REPO_NAME: ${{ github.event.repository.name }}
       REGISTRY: ${{ secrets.REGISTRY_NAME }}
       DOCKER_LOGIN_ID: ${{ secrets.DOCKER_LOGIN_ID }}
-      DOCKER_LOGIN_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
