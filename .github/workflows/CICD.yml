@@ -25,23 +25,26 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
   
-  build-push-registry:
-    name: Docker Build-Push
-    runs-on: self-hosted
-    env:
-      REPO_NAME: ${{ github.event.repository.name }}
-      REGISTRY: ${{ secrets.REGISTRY }}
-      DOCKER_LOGIN_ID: ${{ secrets.DOCKER_LOGIN_ID }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  docker:
+    name: docker build-push-registry
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Login to Docker
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      
+      - name: Set up Docker Buildx
         run: |
-          docker login -u ${{ secrets.DOCKER_LOGIN_ID }} -p {{ secrets.DOCKER_PASSWORD }}
-      - name: Build Docker Image
+          docker build -t sirpm/maven-web-app:GITHUB_SHA .
+        
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_LOGIN_ID }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      
+      - name: Build and push
         run: |
-          docker build -t $REGISTRY/$REPO_NAME:$GITHUB_SHA .
-      - name: Push Docker Image to Container Registry
-        run: |
-          docker push $REGISTRY/$REPO_NAME:$GITHUB_SHA
+          docker push sirpm/maven-web-app:$GITHUB_SHA
+ 
